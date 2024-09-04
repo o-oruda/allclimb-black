@@ -1,7 +1,14 @@
 spring:
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  profiles:
+    include:
+      - database
+
+server:
+  servlet:
+    context-path: /all-climb/api
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true   #디폴트 페이지 안나오게
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
