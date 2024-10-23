@@ -21,6 +21,10 @@ spring:
               - profile
             redirect-uri: ${OAUTH_GOOGLE_REDIRECT_URI}
 
+server:
+  servlet:
+    context-path: /all-climb/api
+
 jwt:
   secret: ${JWT_SECRET}
   redirect: ${REGISTER_TOKEN_REDIRECT_URI}
@@ -30,3 +34,9 @@ jwt:
     expiration-time: ${ACCESS_TOKEN_EXPIRATION_TIME}
   refresh-token:
     expiration-time: ${REFRESH_TOKEN_EXPIRATION_TIME}
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true   #디폴트 페이지 안나오게
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
