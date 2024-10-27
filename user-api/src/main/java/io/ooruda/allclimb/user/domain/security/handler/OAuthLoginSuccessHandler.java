@@ -1,8 +1,8 @@
 package io.ooruda.allclimb.user.domain.security.handler;
 
-import io.ooruda.allclimb.user.domain.member.domain.entity.Member;
+import io.ooruda.allclimb.module.database.entity.member.Member;
 import io.ooruda.allclimb.user.domain.token.domain.entity.RefreshToken;
-import io.ooruda.allclimb.user.domain.member.repository.MemberRepository;
+import io.ooruda.allclimb.module.database.repository.MemberRepository;
 import io.ooruda.allclimb.user.domain.token.repository.RefreshTokenRepository;
 import io.ooruda.allclimb.user.domain.security.dto.GoogleUserInfo;
 import io.ooruda.allclimb.user.domain.security.dto.OAuth2UserInfo;

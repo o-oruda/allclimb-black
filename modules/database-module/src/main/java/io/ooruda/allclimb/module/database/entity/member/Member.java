@@ -1,7 +1,11 @@
-package io.ooruda.allclimb.user.domain.member.domain.entity;
+package io.ooruda.allclimb.module.database.entity.member;
 
-import io.ooruda.allclimb.user.global.common.BaseTimeEntity;
-import jakarta.persistence.*;
+import io.ooruda.allclimb.module.database.entity.BaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.UUID;
@@ -12,20 +16,28 @@ import java.util.UUID;
 @Builder
 @Getter
 @Table(name = "member")
-public class Member extends BaseTimeEntity {
+public class Member extends BaseEntity {
 
+    @NotNull
     @Column(name = "uuid", columnDefinition = "BINARY(16)", unique = true)
     private UUID uuid;
 
-    @Column(name = "name", nullable = false, length = 5)
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
 
+    @Size(max = 250)
     @Column(name = "email")
     private String email;
 
+    @Size(max = 10)
+    @NotNull
     @Column(name = "provider", nullable = false, length = 10)
     private String provider;
 
+    @Size(max = 50)
+    @NotNull
     @Column(name = "provider_id", nullable = false, length = 50)
     private String providerId;
 

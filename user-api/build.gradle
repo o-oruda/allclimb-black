@@ -9,11 +9,13 @@ repositories {
 }
 
 dependencies {
+
+    // module import
+    api project(':modules:database-module')
+
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
-    runtimeOnly 'com.mysql:mysql-connector-j'
 
     // OAuth 2.0
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
@@ -26,11 +28,8 @@ dependencies {
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     testImplementation 'org.springframework.security:spring-security-test'
 
-    // module
-    api project(':modules:database-module')
-
     testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation('org.junit.jupiter:junit-jupiter')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
 test {
