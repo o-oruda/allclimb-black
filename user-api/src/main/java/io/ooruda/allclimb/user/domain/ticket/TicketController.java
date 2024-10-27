@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Tag(name = "Ticket", description = "Ticket api for front")
 @RequiredArgsConstructor
-@RequestMapping("/v1/ticket")
+@RequestMapping("/v1/tickets")
 @RestController
 public class TicketController {
 
