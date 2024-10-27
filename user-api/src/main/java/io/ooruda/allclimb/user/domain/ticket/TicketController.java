@@ -1,4 +1,4 @@
-package io.ooruda.allclimb.user.domain.pass;
+package io.ooruda.allclimb.user.domain.ticket;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@Tag(name = "Pass", description = "Pass api for front")
+@Tag(name = "Ticket", description = "Ticket api for front")
 @RequiredArgsConstructor
-@RequestMapping("/v1/pass")
+@RequestMapping("/v1/ticket")
 @RestController
-public class PassController {
+public class TicketController {
 
-    @Operation(summary = "pass 목록 조회")
+    @Operation(summary = "Ticket 목록 조회")
     @GetMapping
-    public String passList() {
-        log.info("passList");
-        return "pass";
+    public String list() {
+        log.info("ticketList");
+        return "tickets";
     }
 }

@@ -1,6 +1,6 @@
-package io.ooruda.allclimb.user.domain.member.repository;
+package io.ooruda.allclimb.module.database.repository;
 
-import io.ooruda.allclimb.user.domain.member.domain.entity.Member;
+import io.ooruda.allclimb.module.database.entity.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

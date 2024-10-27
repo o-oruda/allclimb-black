@@ -1,26 +1,24 @@
-package io.ooruda.allclimb.module.database.entity.pass;
+package io.ooruda.allclimb.module.database.entity.ticket;
 
-import jakarta.persistence.*;
+import io.ooruda.allclimb.module.database.entity.BaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
 @Getter
 @Entity
-@Table(name = "purchased_pass")
-public class PurchasedPass {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+@Table(name = "purchased_ticket")
+public class PurchasedTicket extends BaseEntity {
 
     @NotNull
-    @Column(name = "pass_id", nullable = false)
-    private Integer passId;
+    @Column(name = "ticket_id", nullable = false)
+    private Integer ticketId;
 
     @NotNull
     @Column(name = "member_id", nullable = false)
@@ -60,27 +58,5 @@ public class PurchasedPass {
     @Size(max = 100)
     @Column(name = "purchase_info", length = 100)
     private String purchaseInfo;
-
-    @NotNull
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
-
-    @Size(max = 50)
-    @NotNull
-    @ColumnDefault("'admin'")
-    @Column(name = "created_by", nullable = false, length = 50)
-    private String createdBy;
-
-    @NotNull
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updated_at", nullable = false)
-    private Instant updatedAt;
-
-    @Size(max = 50)
-    @NotNull
-    @ColumnDefault("'admin'")
-    @Column(name = "updated_by", nullable = false, length = 50)
-    private String updatedBy;
 
 }

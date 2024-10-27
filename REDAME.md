@@ -6,10 +6,10 @@
 io.ooruda.allclimb.user
 ├─ domain
 │  ├─ gym 
-│  ├─ pass 
+│  ├─ ticket 
 │  ├─ purchase 
 │  └─ my
-│     ├─ pass 
+│     ├─ ticket 
 │     ├─ 
 │     └─ gym
 │
