@@ -1,3 +1,14 @@
+name: Java CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - dev
+      - release
+
+env:
+  ENV: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}  # 브랜치에 따라 환경 자동 설정
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
