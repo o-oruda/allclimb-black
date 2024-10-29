@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  allclimb-black:
+    image: ghcr.io/allclimb/allclimb-black:${TAG}  # {TAG} 값을 GitHub Actions에서 동적으로 설정
+    container_name: allclimb-black
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=${ENV}
+    networks:
+      - allclimb-network
+
+#  allclimb-orange:
+#    image: ghcr.io/allclimb/allclimb-orange:${TAG}
+#    container_name: allclimb-orange
+#    restart: unless-stopped
+#    ports:
+#      - "3000:3000"
+#    networks:
+#      - allclimb-network
+
+networks:
+  allclimb-network:
+    driver: bridge

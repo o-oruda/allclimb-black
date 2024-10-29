@@ -51,7 +51,6 @@ jobs:
           docker push ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}/${{ env.SERVICE_NAME }}:$IMAGE_TAG
 
   deploy:
-    needs: build-and-push
     runs-on: ubuntu-latest
     steps:
       - name: SSH and Deploy to EC2
@@ -61,7 +60,7 @@ jobs:
           username: ${{ env.ENV == 'dev' && secrets.ALLCLIMB_DEV_EC2_USER || secrets.ALLCLIMB_PROD_EC2_USER }}
           key: ${{ env.ENV == 'dev' && secrets.ALLCLIMB_DEV_EC2_SSH_KEY || secrets.ALLCLIMB_PROD_EC2_SSH_KEY }}
           script: |
-            IMAGE_TAG=${{ env.ENV == 'dev' && 'latest' || env.BUILD_NUMBER }}
+            TAG=${{ env.ENV == 'dev' && 'latest' || env.BUILD_NUMBER }}
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
-            docker pull ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}/${{ env.SERVICE_NAME }}:$IMAGE_TAG
-            docker compose -f /path/to/docker-compose.yml up -d
+            cd /home/allclimb/deployment
+            TAG=$TAG docker-compose up -d
