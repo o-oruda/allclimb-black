@@ -45,7 +45,7 @@ jobs:
       # Docker 이미지 빌드 및 푸시
       - name: Build and Push Docker Image to GHCR
         run: |
-          IMAGE_TAG=${{ env.ENV == 'dev' && 'latest' || env.BUILD_NUMBER }}
+          IMAGE_TAG=${{ env.BUILD_NUMBER }}
           docker build -t ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}/${{ env.SERVICE_NAME }}:$IMAGE_TAG -f user-api/Dockerfile .
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker push ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}/${{ env.SERVICE_NAME }}:$IMAGE_TAG
@@ -61,32 +61,8 @@ jobs:
           username: ${{ env.ENV == 'dev' && secrets.ALLCLIMB_DEV_EC2_USER || secrets.ALLCLIMB_PROD_EC2_USER }}
           key: ${{ env.ENV == 'dev' && secrets.ALLCLIMB_DEV_EC2_SSH_KEY || secrets.ALLCLIMB_PROD_EC2_SSH_KEY }}
           script: |
-            IMAGE_TAG=${{ env.ENV == 'dev' && 'latest' || env.BUILD_NUMBER }}
+            IMAGE_TAG=${{ env.BUILD_NUMBER }}
             ENV=${{ env.ENV }}
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
-            cd /home/allclimb/allclimb-black
-            TAG=$IMAGE_TAG ENV=$ENV docker compose up -d allclimb-black
-
-  # Slack 알림 전송 단계
-  notify:
-    runs-on: ubuntu-latest
-    needs: [build-and-push, deploy]
-
-    steps:
-      - name: Notify Slack on Success
-        if: success()
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"🎉 *Deployment Succeeded*: The deployment of \`${{ env.SERVICE_NAME }}\` has been completed successfully.\"}" \
-          $SLACK_WEBHOOK_URL
-
-      - name: Notify Slack on Failure
-        if: failure()
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"🚨 *Deployment Failed*: The deployment of \`${{ env.SERVICE_NAME }}\` has failed. Please check the logs for more details.\"}" \
-          $SLACK_WEBHOOK_URL
+            cd /home/allclimb
+            TAG=$IMAGE_TAG ENV=$ENV docker compose up -d --pull always allclimb-black
