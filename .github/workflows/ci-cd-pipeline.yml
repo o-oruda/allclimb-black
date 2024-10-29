@@ -63,8 +63,8 @@ jobs:
           script: |
             IMAGE_TAG=${{ env.BUILD_NUMBER }}
             ENV=${{ env.ENV }}
-            echo "TAG=$IMAGE_TAG" > /home/allclimb/.env
-            echo "ENV=$ENV" >> /home/allclimb/.env
+            echo "TAG=$IMAGE_TAG" > /home/allclimb/allclimb-black/.env
+            echo "ENV=$ENV" >> /home/allclimb/allclimb-black/.env
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
-            cd /home/allclimb
+            cd /home/allclimb/allclimb-black
             docker compose up -d
