@@ -7,7 +7,7 @@ io.ooruda.allclimb.user
 ├─ domain
 │  ├─ tickets
 |  |  ├─ my 
-|  |  └─ pay 
+|  |  └─ purchase 
 │  ├─ gyms 
 │  └─ my
 └─ global
