@@ -63,6 +63,8 @@ jobs:
           script: |
             IMAGE_TAG=${{ env.BUILD_NUMBER }}
             ENV=${{ env.ENV }}
+            echo "TAG=$IMAGE_TAG" > /home/allclimb/.env
+            echo "ENV=$ENV" >> /home/allclimb/.env
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
             cd /home/allclimb
-            TAG=$IMAGE_TAG ENV=$ENV docker compose up -d --pull always allclimb-black
+            docker compose up -d --env-file /home/allclimb/.env allclimb-black
