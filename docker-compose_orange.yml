@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  allclimb-orange:
+    image: ghcr.io/allclimb/allclimb-orange:${TAG}  # 'TAG'는 GitHub Actions에서 설정
+    container_name: allclimb-orange
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - allclimb-network
+
+networks:
+  allclimb-network:
+    driver: bridge
