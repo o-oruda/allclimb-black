@@ -1,17 +1,16 @@
-name: Java CI with Gradle and GHCR
+name: Java CI/CD Pipeline
 
 on:
   push:
-    branches: [ "dev" ]
-  pull_request:
-    branches: [ "dev" ]
+    branches:
+      - dev
+      - release
 
 env:
-  MODULE: "user-api"  # 서브모듈 이름을 환경 변수로 지정하여 쉽게 변경 가능
+  ENV: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}  # 브랜치에 따라 환경 자동 설정
 
 jobs:
   build-and-push:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -30,13 +29,26 @@ jobs:
         with:
           gradle-version: '8.7'
 
-      # 지정된 서브모듈을 빌드
       - name: Build with Gradle Wrapper
-        run: ./gradlew :${{ env.MODULE }}:build -x test
+        run: ./gradlew :user-api:build -x test
 
-      # Docker 이미지 빌드 및 푸시
       - name: Build and Push Docker Image to GHCR
         run: |
-          docker build -t ghcr.io/${{ github.repository }}/my-java-service:${{ env.MODULE }}-latest -f ${{ env.MODULE }}/Dockerfile .
+          docker build -t ghcr.io/${{ github.repository }}/my-java-service:${{ env.ENV }}-latest -f user-api/Dockerfile .
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker push ghcr.io/${{ github.repository }}/my-java-service:${{ env.MODULE }}-latest
+          docker push ghcr.io/${{ github.repository }}/my-java-service:${{ env.ENV }}-latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH and Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets[format('ALLCLIMB_{0}_EC2_HOST', env.ENV | upper)] }}
+          username: ${{ secrets[format('ALLCLIMB_{0}_EC2_USER', env.ENV | upper)] }}
+          key: ${{ secrets[format('ALLCLIMB_{0}_EC2_SSH_KEY', env.ENV | upper)] }}
+          script: |
+            docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
+            docker pull ghcr.io/${{ github.repository }}/my-java-service:${{ env.ENV }}-latest
+            docker compose -f /path/to/docker-compose.yml up -d
