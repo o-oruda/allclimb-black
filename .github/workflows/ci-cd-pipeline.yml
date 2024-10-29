@@ -8,9 +8,10 @@ on:
   workflow_dispatch:
 
 env:
-  SERVICE_NAME: "allclimb-black"  # 서비스 이름 설정
-  PROJECT_NAME: "allclimb"        # 프로젝트 이름
-  ENV: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}  # 환경 자동 설정
+  SERVICE_NAME: "allclimb-black"   # 서비스 이름 설정
+  PROJECT_NAME: "allclimb"         # 프로젝트 이름
+  ENV: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}  # 브랜치에 따라 환경 자동 설정
+  BUILD_NUMBER: ${{ github.run_number }}
 
 jobs:
   build-and-push:
@@ -44,9 +45,10 @@ jobs:
       # Docker 이미지 빌드 및 푸시
       - name: Build and Push Docker Image to GHCR
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}/${{ env.SERVICE_NAME }}:${{ env.ENV }}-latest -f user-api/Dockerfile .
+          IMAGE_TAG=${{ env.ENV == 'dev' && 'latest' || env.BUILD_NUMBER }}
+          docker build -t ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}/${{ env.SERVICE_NAME }}:$IMAGE_TAG -f user-api/Dockerfile .
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker push ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}/${{ env.SERVICE_NAME }}:${{ env.ENV }}-latest
+          docker push ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}/${{ env.SERVICE_NAME }}:$IMAGE_TAG
 
   deploy:
     needs: build-and-push
@@ -59,6 +61,7 @@ jobs:
           username: ${{ env.ENV == 'dev' && secrets.ALLCLIMB_DEV_EC2_USER || secrets.ALLCLIMB_PROD_EC2_USER }}
           key: ${{ env.ENV == 'dev' && secrets.ALLCLIMB_DEV_EC2_SSH_KEY || secrets.ALLCLIMB_PROD_EC2_SSH_KEY }}
           script: |
+            IMAGE_TAG=${{ env.ENV == 'dev' && 'latest' || env.BUILD_NUMBER }}
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
-            docker pull ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}/${{ env.SERVICE_NAME }}:${{ env.ENV }}-latest
+            docker pull ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}/${{ env.SERVICE_NAME }}:$IMAGE_TAG
             docker compose -f /path/to/docker-compose.yml up -d
