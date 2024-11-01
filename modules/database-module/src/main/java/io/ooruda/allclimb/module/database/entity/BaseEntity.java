@@ -42,5 +42,5 @@ public abstract class BaseEntity {
     @NotNull
     @Size(max = 50)
     @Column(name = "updated_by", nullable = false, length = 50)
-    private LocalDateTime updatedBy;
+    private String updatedBy;
 }

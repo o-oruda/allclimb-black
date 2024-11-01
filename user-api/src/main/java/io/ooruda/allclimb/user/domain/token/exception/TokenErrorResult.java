@@ -1,7 +1,7 @@
 package io.ooruda.allclimb.user.domain.token.exception;
 
-import io.ooruda.allclimb.user.global.common.code.BaseErrorCode;
-import io.ooruda.allclimb.user.global.common.dto.ErrorReasonDto;
+import io.ooruda.allclimb.user.common.common.code.BaseErrorCode;
+import io.ooruda.allclimb.user.common.common.dto.ErrorReasonDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

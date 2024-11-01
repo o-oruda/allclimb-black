@@ -1,6 +1,8 @@
 package io.ooruda.allclimb.module.database.entity.ticket;
 
 import io.ooruda.allclimb.module.database.entity.BaseEntity;
+import io.ooruda.allclimb.module.database.entity.ticket.code.SaleStatus;
+import io.ooruda.allclimb.module.database.entity.ticket.code.TicketType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -21,7 +23,7 @@ public class TicketInfo extends BaseEntity {
     @Size(max = 2)
     @NotNull
     @Column(name = "ticket_type", nullable = false, length = 2)
-    private String ticketType;
+    private TicketType ticketType;
 
     /**
      * 가격
@@ -67,6 +69,6 @@ public class TicketInfo extends BaseEntity {
      */
     @Size(max = 2)
     @Column(name = "sale_status", length = 2)
-    private String saleStatus;
+    private SaleStatus saleStatus;
 
 }

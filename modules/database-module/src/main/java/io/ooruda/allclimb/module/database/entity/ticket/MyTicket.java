@@ -1,6 +1,7 @@
 package io.ooruda.allclimb.module.database.entity.ticket;
 
 import io.ooruda.allclimb.module.database.entity.BaseEntity;
+import io.ooruda.allclimb.module.database.entity.ticket.code.MyTicketStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -34,7 +35,7 @@ public class MyTicket extends BaseEntity {
      * 내 이용권 상태
      */
     @Column(name = "status")
-    private String status;
+    private MyTicketStatus status;
 
     /**
      * 남은횟수

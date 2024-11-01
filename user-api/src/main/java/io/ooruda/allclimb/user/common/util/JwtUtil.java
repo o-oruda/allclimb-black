@@ -1,4 +1,4 @@
-package io.ooruda.allclimb.user.global.util;
+package io.ooruda.allclimb.user.common.util;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

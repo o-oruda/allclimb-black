@@ -10,8 +10,7 @@ io.ooruda.allclimb.user
 |  |  └─ purchase 
 │  ├─ gyms 
 │  └─ my
-└─ global
-   ├─ common  
+└─ common
    ├─ config
    └─ util
 ```

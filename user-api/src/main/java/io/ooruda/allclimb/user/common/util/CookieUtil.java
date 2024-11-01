@@ -1,4 +1,4 @@
-package io.ooruda.allclimb.user.global.util;
+package io.ooruda.allclimb.user.common.util;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
