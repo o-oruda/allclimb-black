@@ -1,4 +1,4 @@
-package io.ooruda.allclimb.user.global.common.dto;
+package io.ooruda.allclimb.user.common.common.dto;
 
 import lombok.Builder;
 import lombok.Getter;
