@@ -10,12 +10,37 @@ spring:
               - email
               - profile
             redirect-uri: ${OAUTH_GOOGLE_REDIRECT_URI}
+  pid:
+    file: allclimb-black.pid  # PID 파일 설정 추가
+  profiles:
+    active: dev
+
+
+server:
+  port: 8080
+  servlet:
+    context-path: /all-climb/api
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true  # 디폴트 페이지 안나오게 설정
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
+
+management:
+  server:
+    port: 8090
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
 
 jwt:
   secret: ${JWT_SECRET}
   redirect: ${REGISTER_TOKEN_REDIRECT_URI}
-  #    access: ${ACCESS_TOKEN_REDIRECT_URI}
-  #    register: ${REGISTER_TOKEN_REDIRECT_URI}
   access-token:
     expiration-time: ${ACCESS_TOKEN_EXPIRATION_TIME}
   refresh-token:
