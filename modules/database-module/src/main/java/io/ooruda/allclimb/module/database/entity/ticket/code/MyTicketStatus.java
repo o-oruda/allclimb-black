@@ -11,26 +11,26 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Getter
 @AllArgsConstructor
-public enum TicketType {
-
-    UNKNOWN("00", "unknown tickets"),
-    PERIOD("01", "기간권"),
-    COUNT("02", "횟수권")
+@Getter
+public enum MyTicketStatus {
+    READY("00", "사용대기"),
+    IN_USE("01", "사용중"),
+    EXPIRE("02", "만기"),
+    CANCEL("04", "취소")
     ;
 
     @JsonValue
     private final String code;
     private final String desc;
 
-    private static final Map<String, TicketType> ticketTypeMap = Collections.unmodifiableMap(Stream.of(values())
-            .collect(Collectors.toMap(TicketType::getCode, Function.identity())));
+    private static final Map<String, MyTicketStatus> myTicketStatusMap =
+            Collections.unmodifiableMap(Stream.of(values()).collect(Collectors.toMap(MyTicketStatus::getCode, Function.identity())));
 
-    public static TicketType fromCode(String code) {
+    public static MyTicketStatus fromCode(String code) {
         return Optional.ofNullable(code)
-                .map(ticketTypeMap::get)
-                .orElse(UNKNOWN);
+                .map(myTicketStatusMap::get)
+                .orElse(READY);
     }
 
 }

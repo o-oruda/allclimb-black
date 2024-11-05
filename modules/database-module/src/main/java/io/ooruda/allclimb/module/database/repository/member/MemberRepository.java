@@ -1,4 +1,4 @@
-package io.ooruda.allclimb.module.database.repository;
+package io.ooruda.allclimb.module.database.repository.member;
 
 import io.ooruda.allclimb.module.database.entity.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
