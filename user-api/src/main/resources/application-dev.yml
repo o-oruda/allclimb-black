@@ -1,4 +1,6 @@
 spring:
+  pid:
+    file: allclimb-black.pid  # PID 파일 설정 추가
   security:
     oauth2:
       client:
@@ -10,10 +12,7 @@ spring:
               - email
               - profile
             redirect-uri: ${OAUTH_GOOGLE_REDIRECT_URI}
-  pid:
-    file: allclimb-black.pid  # PID 파일 설정 추가
-  profiles:
-    active: dev
+
 
 
 server:
