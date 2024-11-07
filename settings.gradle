@@ -1,3 +1,4 @@
 rootProject.name = 'allclimb-black'
+include 'admin-api'
 include 'user-api'
 include 'modules:database-module'

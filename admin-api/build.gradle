@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+jar.enabled = false
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // module import
+    api project(':modules:database-module')
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}

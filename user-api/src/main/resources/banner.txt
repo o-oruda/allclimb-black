@@ -8,4 +8,5 @@ ${AnsiColor.BRIGHT_CYAN}  |  .-.  (|  '---.'(|  '---.'  ||  |`-'(|  '---.',|  |_
 ${AnsiColor.MAGENTA}  |  | |  ||      |  |      |  (_'  '--'\|      |(_|  |   |  |   |  | | '--'  /
 ${AnsiColor.BLUE}  `--' `--'`------'  `------'     `-----'`------'  `--'   `--'   `--' `------'
 ${application.title} ${application.version}
-Powered by Spring Boot ${spring-boot.version}
+${AnsiColor.BRIGHT_YELLOW}Powered by Spring Boot ${spring-boot.version}
+${AnsiColor.DEFAULT}
