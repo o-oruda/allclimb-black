@@ -1,4 +1,6 @@
 spring:
+  pid:
+    file: allclimb-black-admin.pid
   profiles:
     active: dev
     include:
@@ -14,3 +16,14 @@ springdoc:
     disable-swagger-default-url: true   #디폴트 페이지 안나오게
   default-produces-media-type: application/json
   default-consumes-media-type: application/json
+
+management:
+  server:
+    port: 8091
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
