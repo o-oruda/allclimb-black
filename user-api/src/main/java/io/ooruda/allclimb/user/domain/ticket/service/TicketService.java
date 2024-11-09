@@ -3,7 +3,7 @@ package io.ooruda.allclimb.user.domain.ticket.service;
 import io.ooruda.allclimb.module.database.entity.ticket.TicketInfo;
 import io.ooruda.allclimb.module.database.entity.ticket.code.SaleStatus;
 import io.ooruda.allclimb.module.database.repository.ticket.TicketInfoRepository;
-import io.ooruda.allclimb.module.database.repository.ticket.dto.TicketInfoWhereParam;
+import io.ooruda.allclimb.module.database.repository.ticket.dto.TicketInfoDefaultWhereParam;
 import io.ooruda.allclimb.user.common.response.error.AllclimbException;
 import io.ooruda.allclimb.user.domain.ticket.dto.Ticket;
 import io.ooruda.allclimb.user.domain.ticket.error.TicketError;
@@ -23,7 +23,7 @@ public class TicketService {
 
     public List<Ticket> getList() {
 
-        final TicketInfoWhereParam param = TicketInfoWhereParam.builder()
+        final TicketInfoDefaultWhereParam param = TicketInfoDefaultWhereParam.builder()
                 .saleStatus(SaleStatus.ON_SALE)
                 .build();
 

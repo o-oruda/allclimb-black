@@ -16,7 +16,9 @@ import java.util.stream.Stream;
 public enum SaleStatus {
 
     ON_SALE("01", "판매중"),
-    OFF_SALE("02", "판매중지")
+    OFF_SALE("02", "판매중지"),
+    READY_SALE("03", "판매예정"),
+    DELETE("99", "삭제")
     ;
 
     @JsonValue
