@@ -66,10 +66,10 @@ jobs:
           debug: true
           script: |
             IMAGE_TAG=${{ env.BUILD_NUMBER }}
-            ENV=${{ env.ENVIRONMENT }}
+            ENV=${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}
 
             # .env 파일 생성하여 Docker Compose가 읽도록 설정
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > /home/allclimb/allclimb-black/.env
+            echo "DATABASE_URL=${{ vars.DATABASE_URL }}" > /home/allclimb/allclimb-black/.env
             echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> /home/allclimb/allclimb-black/.env
             echo "DATABASE_PW=${{ secrets.DATABASE_PW }}" >> /home/allclimb/allclimb-black/.env
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> /home/allclimb/allclimb-black/.env
@@ -103,11 +103,12 @@ jobs:
           STATUS="Success"
           if [ "${{ job.status }}" != "success" ]; then STATUS="Failed"; fi
 
+          # 초 단위로 시작 및 종료 시간 계산
           START_TIME=$(date -d "${{ github.event.workflow_run.created_at }}" +%s)
           END_TIME=$(date +%s)
           DEPLOY_DURATION=$((END_TIME - START_TIME))
           
-          # Convert duration to minutes and seconds
+          # 분과 초로 변환
           MINUTES=$((DEPLOY_DURATION / 60))
           SECONDS=$((DEPLOY_DURATION % 60))
 
