@@ -1,17 +1,3 @@
-spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: ${OAUTH_GOOGLE_CLIENT_ID}
-            client-secret: ${OAUTH_GOOGLE_CLIENT_SECRET}
-            redirect-uri: ${OAUTH_GOOGLE_REDIRECT_URI}
-
-jwt:
-  secret: ${JWT_SECRET}
-  redirect: ${REGISTER_TOKEN_REDIRECT_URI}
-  access-token:
-    expiration-time: ${ACCESS_TOKEN_EXPIRATION_TIME}
-  refresh-token:
-    expiration-time: ${REFRESH_TOKEN_EXPIRATION_TIME}
+logging:
+  level:
+    root: INFO

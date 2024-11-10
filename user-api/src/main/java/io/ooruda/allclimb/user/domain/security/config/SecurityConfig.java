@@ -40,9 +40,9 @@ public class SecurityConfig {
                 httpBasic(HttpBasicConfigurer::disable)
                 .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize ->
-                        authorize
-                                .requestMatchers("/**").permitAll()
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/index.html/**").permitAll()
+                        .requestMatchers("/**").permitAll()
                 )
 
                 .oauth2Login(oauth ->
