@@ -11,7 +11,6 @@ env:
   SERVICE_NAME: "allclimb-black"
   PROJECT_NAME: "allclimb"
   BUILD_NUMBER: ${{ github.run_number }}
-  ENVIRONMENT: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}
 
 jobs:
   build-and-push:
@@ -19,7 +18,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    environment: ${{ env.ENVIRONMENT }}  # 환경 변수 설정
+    environment: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}  # 브랜치에 따라 환경 설정
 
     steps:
       - uses: actions/checkout@v4
@@ -54,11 +53,11 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
-    environment: ${{ env.ENVIRONMENT }}  # 환경 변수 설정
+    environment: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}  # 브랜치에 따라 환경 설정
 
     steps:
       - name: Set Deployment Environment
-        run: echo "ENV=${{ env.ENVIRONMENT }}" >> $GITHUB_ENV
+        run: echo "ENV=${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}" >> $GITHUB_ENV
 
       - name: SSH and Deploy allclimb-black
         uses: appleboy/ssh-action@v0.1.4
@@ -68,7 +67,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             IMAGE_TAG=${{ env.BUILD_NUMBER }}
-            ENV=${{ env.ENVIRONMENT }}
+            ENV=${{ env.ENV }}
 
             # .env 파일 생성하여 Docker Compose가 읽도록 설정
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > /home/allclimb/allclimb-black/.env
@@ -92,5 +91,5 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{
-            "text": "Deployment completed for *${{ env.SERVICE_NAME }}* in *${{ env.ENVIRONMENT }}* environment.\nBuild Number: *${{ env.BUILD_NUMBER }}*\nStatus: Success"
+            "text": "Deployment completed for *${{ env.SERVICE_NAME }}* in *${{ env.ENV }}* environment.\nBuild Number: *${{ env.BUILD_NUMBER }}*\nStatus: Success"
           }' $SLACK_WEBHOOK_URL
