@@ -69,17 +69,19 @@ jobs:
             ENV=${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}
 
             # .env 파일 생성하여 Docker Compose가 읽도록 설정
-            echo "DATABASE_URL=${{ vars.DATABASE_URL }}" > /home/allclimb/allclimb-black/.env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > /home/allclimb/allclimb-black/.env
             echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> /home/allclimb/allclimb-black/.env
             echo "DATABASE_PW=${{ secrets.DATABASE_PW }}" >> /home/allclimb/allclimb-black/.env
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> /home/allclimb/allclimb-black/.env
             echo "OAUTH_GOOGLE_CLIENT_ID=${{ secrets.OAUTH_GOOGLE_CLIENT_ID }}" >> /home/allclimb/allclimb-black/.env
             echo "OAUTH_GOOGLE_CLIENT_SECRET=${{ secrets.OAUTH_GOOGLE_CLIENT_SECRET }}" >> /home/allclimb/allclimb-black/.env
-            echo "DATABASE_PROFILE=${{ vars.DATABASE_PROFILE }}" > /home/allclimb/allclimb-black/.env
+            echo "DATABASE_PROFILE=${{ vars.DATABASE_PROFILE }}" >> /home/allclimb/allclimb-black/.env
             echo "ACCESS_TOKEN_EXPIRATION_TIME=${{ vars.ACCESS_TOKEN_EXPIRATION_TIME }}" >> /home/allclimb/allclimb-black/.env
             echo "REFRESH_TOKEN_EXPIRATION_TIME=${{ vars.REFRESH_TOKEN_EXPIRATION_TIME }}" >> /home/allclimb/allclimb-black/.env
             echo "OAUTH_GOOGLE_REDIRECT_URI=${{ vars.OAUTH_GOOGLE_REDIRECT_URI }}" >> /home/allclimb/allclimb-black/.env
             echo "REGISTER_TOKEN_REDIRECT_URI=${{ vars.REGISTER_TOKEN_REDIRECT_URI }}" >> /home/allclimb/allclimb-black/.env
+            echo "TAG=$IMAGE_TAG" >> /home/allclimb/allclimb-black/.env
+            echo "ENV=$ENV" >> /home/allclimb/allclimb-black/.env
             
             echo "TAG=$IMAGE_TAG" >> /home/allclimb/allclimb-black/.env
             echo "ENV=$ENV" >> /home/allclimb/allclimb-black/.env
