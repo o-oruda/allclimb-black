@@ -85,9 +85,7 @@ jobs:
             cd /home/allclimb/allclimb-black
             docker compose up -d
 
-
-
-  # 실패해도 항상 실행되는 Slack 알림 단계
+  # Slack notification step that always runs, even if the job fails
   notify-slack:
     needs: [build-and-push, deploy]
     runs-on: ubuntu-latest
@@ -108,7 +106,11 @@ jobs:
           START_TIME=$(date -d "${{ github.event.workflow_run.created_at }}" +%s)
           END_TIME=$(date +%s)
           DEPLOY_DURATION=$((END_TIME - START_TIME))
+          
+          # Convert duration to minutes and seconds
+          MINUTES=$((DEPLOY_DURATION / 60))
+          SECONDS=$((DEPLOY_DURATION % 60))
 
           curl -X POST -H 'Content-type: application/json' --data "{
-            \"text\": \"*배포 결과*: $STATUS\n*배포 브랜치*: $GITHUB_REF\n*배포에 걸린 시간*: ${DEPLOY_DURATION}s\n*배포한 사람*: $GITHUB_ACTOR\n*빌드번호*: $BUILD_NUMBER\n*환경*: $ENVIRONMENT\"
+            \"text\": \"*Deployment Result*: $STATUS\n*Branch*: $GITHUB_REF\n*Duration*: ${MINUTES}m ${SECONDS}s\n*Deployed By*: $GITHUB_ACTOR\n*Build Number*: $BUILD_NUMBER\n*Environment*: $ENVIRONMENT\"
           }" $SLACK_WEBHOOK_URL
