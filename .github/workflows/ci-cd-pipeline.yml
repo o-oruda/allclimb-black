@@ -84,6 +84,7 @@ jobs:
             docker compose up -d
 
 
+  # 실패해도 항상 실행되는 Slack 알림 단계
   notify-slack:
     needs: [build-and-push, deploy]
     runs-on: ubuntu-latest
@@ -93,9 +94,18 @@ jobs:
       - name: Send Slack Notification
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_REF: ${{ github.ref }}
+          BUILD_NUMBER: ${{ env.BUILD_NUMBER }}
+          ENVIRONMENT: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}
         run: |
           STATUS="Success"
           if [ "${{ job.status }}" != "success" ]; then STATUS="Failed"; fi
-          curl -X POST -H 'Content-type: application/json' --data '{
-            "text": "Deployment *${{ env.SERVICE_NAME }}* in *${{ env.ENV }}* environment has *$STATUS*.\nBuild Number: *${{ env.BUILD_NUMBER }}*"
-          }' $SLACK_WEBHOOK_URL
+
+          START_TIME=$(date -d "${{ github.event.workflow_run.created_at }}" +%s)
+          END_TIME=$(date +%s)
+          DEPLOY_DURATION=$((END_TIME - START_TIME))
+
+          curl -X POST -H 'Content-type: application/json' --data "{
+            \"text\": \"*배포 결과*: $STATUS\n*배포 브랜치*: $GITHUB_REF\n*배포에 걸린 시간*: ${DEPLOY_DURATION}s\n*배포한 사람*: $GITHUB_ACTOR\n*빌드번호*: $BUILD_NUMBER\n*환경*: $ENVIRONMENT\"
+          }" $SLACK_WEBHOOK_URL
