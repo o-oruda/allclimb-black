@@ -86,7 +86,7 @@ jobs:
             # Docker Compose 실행
             docker login ghcr.io -u ${{ github.actor }} --password-stdin <<< "${{ secrets.GITHUB_TOKEN }}"
             cd /home/allclimb/allclimb-black
-            docker compose up -d
+            docker compose --env-file .env up -d
 
   # Slack notification step that always runs, even if the job fails
   notify-slack:
