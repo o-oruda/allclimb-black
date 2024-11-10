@@ -13,10 +13,7 @@ server:
 
 springdoc:
   swagger-ui:
-    path: /swagger-ui/index.html  # 이 경로를 context-path와 일치하도록 설정
-  api-docs:
-    path: /v3/api-docs  # OpenAPI 문서는 이 경로에서 제공
-
+    disable-swagger-default-url: true
   default-produces-media-type: application/json
   default-consumes-media-type: application/json
 
