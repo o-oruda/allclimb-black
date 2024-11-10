@@ -18,6 +18,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+    environment: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -33,15 +34,12 @@ jobs:
         with:
           gradle-version: '8.7'
 
-      # Gradle 빌드
       - name: Build with Gradle Wrapper
         run: ./gradlew :user-api:build -x test
 
-      # 빌드된 JAR 파일을 최상위 디렉토리로 이동
       - name: Copy JAR to root
         run: cp user-api/build/libs/user-api-0.0.1-SNAPSHOT.jar app.jar
 
-      # Docker 이미지 빌드 및 푸시
       - name: Build and Push Docker Image to GHCR
         run: |
           IMAGE_TAG=${{ env.BUILD_NUMBER }}
@@ -52,6 +50,7 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}
 
     steps:
       - name: Set Deployment Environment
@@ -68,7 +67,6 @@ jobs:
             IMAGE_TAG=${{ env.BUILD_NUMBER }}
             ENV=${{ env.ENV }}
 
-            # .env 파일 생성하여 Docker Compose가 읽도록 설정
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > /home/allclimb/allclimb-black/.env
             echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> /home/allclimb/allclimb-black/.env
             echo "DATABASE_PW=${{ secrets.DATABASE_PW }}" >> /home/allclimb/allclimb-black/.env
@@ -78,15 +76,14 @@ jobs:
             echo "ACCESS_TOKEN_EXPIRATION_TIME=${{ vars.ACCESS_TOKEN_EXPIRATION_TIME }}" >> /home/allclimb/allclimb-black/.env
             echo "REFRESH_TOKEN_EXPIRATION_TIME=${{ vars.REFRESH_TOKEN_EXPIRATION_TIME }}" >> /home/allclimb/allclimb-black/.env
 
-            # Docker Compose 실행
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
             cd /home/allclimb/allclimb-black
             docker compose up -d --env-file .env
 
-  # 실패해도 항상 실행되는 Slack 알림 단계
   notify-slack:
     needs: [build-and-push, deploy]
     runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}
     if: always()
     steps:
       - name: Send Slack Notification
