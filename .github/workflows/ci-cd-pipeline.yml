@@ -63,10 +63,12 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          debug: true
           script: |
             IMAGE_TAG=${{ env.BUILD_NUMBER }}
             ENV=${{ env.ENV }}
 
+            # .env 파일 생성하여 Docker Compose가 읽도록 설정
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > /home/allclimb/allclimb-black/.env
             echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> /home/allclimb/allclimb-black/.env
             echo "DATABASE_PW=${{ secrets.DATABASE_PW }}" >> /home/allclimb/allclimb-black/.env
@@ -76,9 +78,11 @@ jobs:
             echo "ACCESS_TOKEN_EXPIRATION_TIME=${{ vars.ACCESS_TOKEN_EXPIRATION_TIME }}" >> /home/allclimb/allclimb-black/.env
             echo "REFRESH_TOKEN_EXPIRATION_TIME=${{ vars.REFRESH_TOKEN_EXPIRATION_TIME }}" >> /home/allclimb/allclimb-black/.env
 
+            # Docker Compose 실행
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
             cd /home/allclimb/allclimb-black
-            docker compose up -d --env-file .env
+            docker compose up -d
+
 
   notify-slack:
     needs: [build-and-push, deploy]
