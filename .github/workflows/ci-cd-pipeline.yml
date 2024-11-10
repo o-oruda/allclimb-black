@@ -66,7 +66,7 @@ jobs:
           debug: true
           script: |
             IMAGE_TAG=${{ env.BUILD_NUMBER }}
-            ENV=${{ env.ENV }}
+            ENV=${{ env.ENVIRONMENT }}
 
             # .env 파일 생성하여 Docker Compose가 읽도록 설정
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > /home/allclimb/allclimb-black/.env
@@ -77,11 +77,14 @@ jobs:
             echo "OAUTH_GOOGLE_CLIENT_SECRET=${{ secrets.OAUTH_GOOGLE_CLIENT_SECRET }}" >> /home/allclimb/allclimb-black/.env
             echo "ACCESS_TOKEN_EXPIRATION_TIME=${{ vars.ACCESS_TOKEN_EXPIRATION_TIME }}" >> /home/allclimb/allclimb-black/.env
             echo "REFRESH_TOKEN_EXPIRATION_TIME=${{ vars.REFRESH_TOKEN_EXPIRATION_TIME }}" >> /home/allclimb/allclimb-black/.env
+            echo "TAG=$IMAGE_TAG" >> /home/allclimb/allclimb-black/.env
+            echo "ENV=$ENV" >> /home/allclimb/allclimb-black/.env
 
             # Docker Compose 실행
-            docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
+            docker login ghcr.io -u ${{ github.actor }} --password-stdin <<< "${{ secrets.GITHUB_TOKEN }}"
             cd /home/allclimb/allclimb-black
             docker compose up -d
+
 
 
   # 실패해도 항상 실행되는 Slack 알림 단계
