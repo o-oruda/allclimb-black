@@ -10,7 +10,6 @@ on:
 env:
   SERVICE_NAME: "allclimb-black"
   PROJECT_NAME: "allclimb"
-  ENV: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}
   BUILD_NUMBER: ${{ github.run_number }}
 
 jobs:
@@ -19,6 +18,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+    environment: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -30,19 +30,16 @@ jobs:
           distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
+        uses: gradle/gradle-build-action@v2
         with:
           gradle-version: '8.7'
 
-      # Gradle 빌드
       - name: Build with Gradle Wrapper
         run: ./gradlew :user-api:build -x test
 
-      # 빌드된 JAR 파일을 최상위 디렉토리로 이동
       - name: Copy JAR to root
         run: cp user-api/build/libs/user-api-0.0.1-SNAPSHOT.jar app.jar
 
-      # Docker 이미지 빌드 및 푸시
       - name: Build and Push Docker Image to GHCR
         run: |
           IMAGE_TAG=${{ env.BUILD_NUMBER }}
@@ -53,18 +50,71 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}
+
     steps:
+      - name: Set Deployment Environment
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/dev" ]; then echo "ENV=dev" >> $GITHUB_ENV; else echo "ENV=prod" >> $GITHUB_ENV; fi
+
       - name: SSH and Deploy allclimb-black
         uses: appleboy/ssh-action@v0.1.4
         with:
-          host: ${{ env.ENV == 'dev' && secrets.ALLCLIMB_DEV_EC2_HOST || secrets.ALLCLIMB_PROD_EC2_HOST }}
-          username: ${{ env.ENV == 'dev' && secrets.ALLCLIMB_DEV_EC2_USER || secrets.ALLCLIMB_PROD_EC2_USER }}
-          key: ${{ env.ENV == 'dev' && secrets.ALLCLIMB_DEV_EC2_SSH_KEY || secrets.ALLCLIMB_PROD_EC2_SSH_KEY }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          debug: true
           script: |
             IMAGE_TAG=${{ env.BUILD_NUMBER }}
-            ENV=${{ env.ENV }}
-            echo "TAG=$IMAGE_TAG" > /home/allclimb/allclimb-black/.env
+            ENV=${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}
+
+            # .env 파일 생성하여 Docker Compose가 읽도록 설정
+            echo "DATABASE_URL=${{ vars.DATABASE_URL }}" > /home/allclimb/allclimb-black/.env
+            echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> /home/allclimb/allclimb-black/.env
+            echo "DATABASE_PW=${{ secrets.DATABASE_PW }}" >> /home/allclimb/allclimb-black/.env
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> /home/allclimb/allclimb-black/.env
+            echo "OAUTH_GOOGLE_CLIENT_ID=${{ secrets.OAUTH_GOOGLE_CLIENT_ID }}" >> /home/allclimb/allclimb-black/.env
+            echo "OAUTH_GOOGLE_CLIENT_SECRET=${{ secrets.OAUTH_GOOGLE_CLIENT_SECRET }}" >> /home/allclimb/allclimb-black/.env
+            echo "DATABASE_PROFILE=${{ vars.DATABASE_PROFILE }}" >> /home/allclimb/allclimb-black/.env
+            echo "ACCESS_TOKEN_EXPIRATION_TIME=${{ vars.ACCESS_TOKEN_EXPIRATION_TIME }}" >> /home/allclimb/allclimb-black/.env
+            echo "REFRESH_TOKEN_EXPIRATION_TIME=${{ vars.REFRESH_TOKEN_EXPIRATION_TIME }}" >> /home/allclimb/allclimb-black/.env
+            echo "OAUTH_GOOGLE_REDIRECT_URI=${{ vars.OAUTH_GOOGLE_REDIRECT_URI }}" >> /home/allclimb/allclimb-black/.env
+            echo "REGISTER_TOKEN_REDIRECT_URI=${{ vars.REGISTER_TOKEN_REDIRECT_URI }}" >> /home/allclimb/allclimb-black/.env
+            echo "TAG=$IMAGE_TAG" >> /home/allclimb/allclimb-black/.env
             echo "ENV=$ENV" >> /home/allclimb/allclimb-black/.env
-            docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
+
+            # Docker Compose 실행
+            docker login ghcr.io -u ${{ github.actor }} --password-stdin <<< "${{ secrets.GITHUB_TOKEN }}"
             cd /home/allclimb/allclimb-black
-            docker compose up -d
+            docker compose --env-file .env up -d
+
+  # Slack notification step that always runs, even if the job fails
+  notify-slack:
+    needs: [build-and-push, deploy]
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}
+    if: always()
+    steps:
+      - name: Send Slack Notification
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_REF: ${{ github.ref }}
+          BUILD_NUMBER: ${{ env.BUILD_NUMBER }}
+          ENVIRONMENT: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}
+        run: |
+          STATUS="Success"
+          if [ "${{ job.status }}" != "success" ]; then STATUS="Failed"; fi
+
+          # 초 단위로 시작 및 종료 시간 계산
+          START_TIME=$(date -d "${{ github.event.workflow_run.created_at }}" +%s)
+          END_TIME=$(date +%s)
+          DEPLOY_DURATION=$((END_TIME - START_TIME))
+          
+          # 분과 초로 변환
+          MINUTES=$((DEPLOY_DURATION / 60))
+          SECONDS=$((DEPLOY_DURATION % 60))
+
+          curl -X POST -H 'Content-type: application/json' --data "{
+            \"text\": \"*Deployment Result*: $STATUS\n*Branch*: $GITHUB_REF\n*Duration*: ${MINUTES}m ${SECONDS}s\n*Deployed By*: $GITHUB_ACTOR\n*Build Number*: $BUILD_NUMBER\n*Environment*: $ENVIRONMENT\"
+          }" $SLACK_WEBHOOK_URL

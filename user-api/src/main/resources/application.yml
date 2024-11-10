@@ -2,7 +2,7 @@ spring:
   pid:
     file: allclimb-black.pid
   profiles:
-    active: dev
+    active: ${SPRING_PROFILE:local}   # 기본 프로파일은 'local'
     include:
       - database
 
@@ -13,9 +13,6 @@ spring:
           google:
             client-id: ${OAUTH_GOOGLE_CLIENT_ID}
             client-secret: ${OAUTH_GOOGLE_CLIENT_SECRET}
-            scope:
-              - email
-              - profile
             redirect-uri: ${OAUTH_GOOGLE_REDIRECT_URI}
 
 jwt:
@@ -26,6 +23,7 @@ jwt:
   refresh-token:
     expiration-time: ${REFRESH_TOKEN_EXPIRATION_TIME}
 
+
 server:
   port: 8080
   servlet:
@@ -33,9 +31,10 @@ server:
 
 springdoc:
   swagger-ui:
-    disable-swagger-default-url: true   #디폴트 페이지 안나오게
+    disable-swagger-default-url: true
   default-produces-media-type: application/json
   default-consumes-media-type: application/json
+
 
 management:
   server:
