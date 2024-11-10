@@ -11,6 +11,7 @@ env:
   SERVICE_NAME: "allclimb-black"
   PROJECT_NAME: "allclimb"
   BUILD_NUMBER: ${{ github.run_number }}
+  ENV: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}
 
 jobs:
   build-and-push:
@@ -18,7 +19,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    environment: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}  # 환경 자동 선택
+    environment: ${{ env.ENV }}
 
     steps:
       - uses: actions/checkout@v4
@@ -30,7 +31,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
+        uses: gradle/actions/setup-gradle@v1
         with:
           gradle-version: '8.7'
 
@@ -53,8 +54,7 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
-    environment: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}  # 환경 자동 선택
-
+    environment: ${{ env.ENV }}
     steps:
       - name: SSH and Deploy allclimb-black
         uses: appleboy/ssh-action@v0.1.4
@@ -64,9 +64,29 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             IMAGE_TAG=${{ env.BUILD_NUMBER }}
-            ENV=${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}
-            echo "TAG=$IMAGE_TAG" > /home/allclimb/allclimb-black/.env
-            echo "ENV=$ENV" >> /home/allclimb/allclimb-black/.env
+            ENV=${{ env.ENV }}
+
+            # .env 파일 생성하여 Docker Compose가 읽도록 설정
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > /home/allclimb/allclimb-black/.env
+            echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> /home/allclimb/allclimb-black/.env
+            echo "DATABASE_PW=${{ secrets.DATABASE_PW }}" >> /home/allclimb/allclimb-black/.env
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> /home/allclimb/allclimb-black/.env
+            echo "OAUTH_GOOGLE_CLIENT_ID=${{ secrets.OAUTH_GOOGLE_CLIENT_ID }}" >> /home/allclimb/allclimb-black/.env
+            echo "OAUTH_GOOGLE_CLIENT_SECRET=${{ secrets.OAUTH_GOOGLE_CLIENT_SECRET }}" >> /home/allclimb/allclimb-black/.env
+            echo "ACCESS_TOKEN_EXPIRATION_TIME=${{ vars.ACCESS_TOKEN_EXPIRATION_TIME }}" >> /home/allclimb/allclimb-black/.env
+            echo "REFRESH_TOKEN_EXPIRATION_TIME=${{ vars.REFRESH_TOKEN_EXPIRATION_TIME }}" >> /home/allclimb/allclimb-black/.env
+
+            # Docker Compose 실행
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
             cd /home/allclimb/allclimb-black
-            docker compose up -d
+            docker compose up -d --env-file .env
+
+      # Slack 알림 전송 단계 추가
+      - name: Notify Slack
+        if: always()  # 성공 여부와 관계없이 알림 전송
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{
+            "text": "Deployment completed for *${{ env.SERVICE_NAME }}* in *${{ env.ENV }}* environment.\nBuild Number: *${{ env.BUILD_NUMBER }}*\nStatus: Success"
+          }' $SLACK_WEBHOOK_URL
