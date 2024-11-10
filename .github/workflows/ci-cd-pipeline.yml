@@ -11,6 +11,7 @@ env:
   SERVICE_NAME: "allclimb-black"
   PROJECT_NAME: "allclimb"
   BUILD_NUMBER: ${{ github.run_number }}
+  ENVIRONMENT: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}
 
 jobs:
   build-and-push:
@@ -18,7 +19,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    environment: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}  # 브랜치에 따라 환경 설정
+    environment: ${{ env.ENVIRONMENT }}
 
     steps:
       - uses: actions/checkout@v4
@@ -30,7 +31,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v1
+        uses: gradle/gradle-build-action@v2
         with:
           gradle-version: '8.7'
 
@@ -53,7 +54,7 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
-    environment: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'prod' }}  # 브랜치에 따라 환경 설정
+    environment: ${{ env.ENVIRONMENT }}
 
     steps:
       - name: Set Deployment Environment
@@ -67,7 +68,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             IMAGE_TAG=${{ env.BUILD_NUMBER }}
-            ENV=${{ env.ENV }}
+            ENV=${{ env.ENVIRONMENT }}
 
             # .env 파일 생성하여 Docker Compose가 읽도록 설정
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > /home/allclimb/allclimb-black/.env
@@ -91,5 +92,5 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{
-            "text": "Deployment completed for *${{ env.SERVICE_NAME }}* in *${{ env.ENV }}* environment.\nBuild Number: *${{ env.BUILD_NUMBER }}*\nStatus: Success"
+            "text": "Deployment completed for *${{ env.SERVICE_NAME }}* in *${{ env.ENVIRONMENT }}* environment.\nBuild Number: *${{ env.BUILD_NUMBER }}*\nStatus: Success"
           }' $SLACK_WEBHOOK_URL
