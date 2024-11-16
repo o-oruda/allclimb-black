@@ -15,7 +15,7 @@ public class MyTicketStatusConverter implements AttributeConverter<MyTicketStatu
     public String convertToDatabaseColumn(MyTicketStatus myTicketStatus) {
         return Optional.ofNullable(myTicketStatus)
                 .map(MyTicketStatus::getCode)
-                .orElse(READY.getCode());
+                .orElse(null);
     }
 
     @Override

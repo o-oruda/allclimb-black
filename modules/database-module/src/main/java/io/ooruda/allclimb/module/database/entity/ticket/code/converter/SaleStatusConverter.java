@@ -15,7 +15,7 @@ public class SaleStatusConverter implements AttributeConverter<SaleStatus, Strin
     public String convertToDatabaseColumn(SaleStatus saleStatus) {
         return Optional.ofNullable(saleStatus)
                 .map(SaleStatus::getCode)
-                .orElse(OFF_SALE.getCode());
+                .orElse(null);
     }
 
     @Override

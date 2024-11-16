@@ -14,10 +14,10 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 @Getter
 public enum MyTicketStatus {
-    READY("00", "사용대기"),
-    IN_USE("01", "사용중"),
-    EXPIRE("02", "만기"),
-    CANCEL("04", "취소")
+    READY("RD", "사용대기"),
+    IN_USE("DO", "사용중"),
+    EXPIRE("EX", "만기"),
+    CANCEL("CN", "취소")
     ;
 
     @JsonValue
@@ -28,9 +28,9 @@ public enum MyTicketStatus {
             Collections.unmodifiableMap(Stream.of(values()).collect(Collectors.toMap(MyTicketStatus::getCode, Function.identity())));
 
     public static MyTicketStatus fromCode(String code) {
-        return Optional.ofNullable(code)
-                .map(myTicketStatusMap::get)
-                .orElse(READY);
+        if (code == null) return null;
+        return Optional.ofNullable(myTicketStatusMap.get(code))
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown code '%s'", code)));
     }
 
 }

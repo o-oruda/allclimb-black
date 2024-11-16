@@ -3,6 +3,7 @@ package io.ooruda.allclimb.user.common.config;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,6 +22,22 @@ public class SwaggerConfig {
                 .title("All Climb User API")
                 .description("All Climb User API-Docs")
                 .version("0.0.1");
+    }
+
+    @Bean
+    public GroupedOpenApi userApiGroup() {
+        return GroupedOpenApi.builder()
+                .group("01. user-api")
+                .packagesToScan("io.ooruda.allclimb.user.domain")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi adminApiGroup() {
+        return GroupedOpenApi.builder()
+                .group("02. admin-api")
+                .packagesToScan("io.ooruda.allclimb.user.admin")
+                .build();
     }
 
 }

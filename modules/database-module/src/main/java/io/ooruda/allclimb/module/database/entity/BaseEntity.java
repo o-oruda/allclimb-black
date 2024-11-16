@@ -23,12 +23,10 @@ public abstract class BaseEntity {
 
     @CreatedDate
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @NotNull
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @ColumnDefault("'system'")
-    @NotNull
     @Size(max = 50)
     @Column(name = "created_by", nullable = false, updatable = false, length = 50)
     private String createdBy;
@@ -39,7 +37,6 @@ public abstract class BaseEntity {
     private LocalDateTime updatedAt;
 
     @ColumnDefault("'admin'")
-    @NotNull
     @Size(max = 50)
     @Column(name = "updated_by", nullable = false, length = 50)
     private String updatedBy;
