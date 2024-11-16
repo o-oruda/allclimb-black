@@ -4,7 +4,10 @@ import io.ooruda.allclimb.user.common.response.code.CommonResponseCode;
 import io.ooruda.allclimb.user.common.response.code.ResponseCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ProblemDetail;
 
+@Slf4j
 @Getter
 @AllArgsConstructor
 public class ApiResponse<T> {
@@ -25,5 +28,10 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<T> error(ResponseCode errorCode) {
         return new ApiResponse<>(errorCode, null);
+    }
+
+    public static <T> ApiResponse<T> error(ProblemDetail problemDetail) {
+        log.info("detail: {}", problemDetail);
+        return new ApiResponse<>(CommonResponseCode.ERROR.getCode(), problemDetail.getDetail(), null);
     }
 }

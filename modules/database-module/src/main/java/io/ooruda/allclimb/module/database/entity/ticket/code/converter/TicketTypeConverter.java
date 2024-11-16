@@ -6,7 +6,7 @@ import jakarta.persistence.Converter;
 
 import java.util.Optional;
 
-import static io.ooruda.allclimb.module.database.entity.ticket.code.TicketType.*;
+import static io.ooruda.allclimb.module.database.entity.ticket.code.TicketType.fromCode;
 
 @Converter(autoApply = true)
 public class TicketTypeConverter implements AttributeConverter<TicketType, String> {
@@ -15,7 +15,7 @@ public class TicketTypeConverter implements AttributeConverter<TicketType, Strin
     public String convertToDatabaseColumn(TicketType ticketType) {
         return Optional.ofNullable(ticketType)
                 .map(TicketType::getCode)
-                .orElse(PERIOD.getCode());
+                .orElse(null);
     }
 
     @Override

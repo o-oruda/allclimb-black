@@ -1,14 +1,19 @@
 package io.ooruda.allclimb.user.domain.ticket.api;
 
-import io.ooruda.allclimb.user.domain.ticket.dto.Ticket;
+import io.ooruda.allclimb.module.database.entity.ticket.code.TicketType;
+import io.ooruda.allclimb.user.domain.ticket.api.request.TicketSearchDto;
+import io.ooruda.allclimb.user.domain.ticket.api.response.Ticket;
 import io.ooruda.allclimb.user.domain.ticket.service.TicketService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Tag(name = "Ticket", description = "Ticket api for front")
@@ -21,8 +26,16 @@ public class TicketController {
 
     @Operation(summary = "Ticket 목록 조회")
     @GetMapping
-    public List<Ticket> list() {
-        return ticketService.getList();
+    public List<Ticket> list(
+            @Parameter(name = "티켓타입",
+                    examples = {@ExampleObject(name = "기간권", value = "01"),
+                            @ExampleObject(name = "횟수권", value = "02")})
+            @RequestParam (required = false) Optional<String> ticketTypeCode) {
+
+        return ticketService.getList(
+                TicketSearchDto.builder()
+                        .ticketType(ticketTypeCode.map(TicketType::fromCode).orElse(null))
+                        .build());
     }
 
     @Operation(summary = "Ticket id 조회")

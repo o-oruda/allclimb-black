@@ -7,22 +7,24 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
 
 @Setter
 @Getter
 @Entity
+@DynamicInsert
+@DynamicUpdate
 @Table(name = "ticket_info")
 public class TicketInfo extends BaseEntity {
 
     /**
      * 이용권타입
      */
-    @Size(max = 2)
     @NotNull
     @Column(name = "ticket_type", nullable = false, length = 2)
     private TicketType ticketType;
@@ -37,7 +39,6 @@ public class TicketInfo extends BaseEntity {
     /**
      * 이용권이름
      */
-    @Size(max = 100)
     @NotNull
     @Column(name = "name", nullable = false, length = 100)
     private String name;
@@ -69,8 +70,26 @@ public class TicketInfo extends BaseEntity {
     /**
      * 판매상태
      */
-    @Size(max = 2)
     @Column(name = "sale_status", length = 2)
     private SaleStatus saleStatus;
+
+    public boolean invalidTicket() {
+        if (minUseGrade != null && maxUseGrade != null && minUseGrade > maxUseGrade) {
+            return true;
+        }
+        if (name == null || name.isEmpty()) {
+            return true;
+        }
+        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
+            return true;
+        }
+        if (ticketType == null) {
+            return true;
+        }
+        if (saleStatus == null || saleStatus.equals(SaleStatus.DELETE)) {
+            return true;
+        }
+        return false;
+    }
 
 }

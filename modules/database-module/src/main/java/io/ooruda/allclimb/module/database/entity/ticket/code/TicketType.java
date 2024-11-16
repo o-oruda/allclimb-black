@@ -3,6 +3,7 @@ package io.ooruda.allclimb.module.database.entity.ticket.code;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
 import java.util.Map;
@@ -15,9 +16,8 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 public enum TicketType {
 
-    UNKNOWN("00", "unknown tickets"),
-    PERIOD("01", "기간권"),
-    COUNT("02", "횟수권")
+    PERIOD("PT", "기간권"),
+    COUNT("CT", "횟수권")
     ;
 
     @JsonValue
@@ -28,9 +28,9 @@ public enum TicketType {
             .collect(Collectors.toMap(TicketType::getCode, Function.identity())));
 
     public static TicketType fromCode(String code) {
-        return Optional.ofNullable(code)
-                .map(ticketTypeMap::get)
-                .orElse(UNKNOWN);
+        if (code == null) return null;
+        return Optional.of(ticketTypeMap.get(code))
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown code '%s'", code)));
     }
 
 }

@@ -3,6 +3,7 @@ package io.ooruda.allclimb.user.common.response;
 import io.ooruda.allclimb.user.common.response.dto.ApiResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -25,13 +26,14 @@ public class ApiResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             return body;
         }
 
-        if (body instanceof ApiResponse<?>) {
+        if (body instanceof ApiResponse<?> || body instanceof byte[]) {
             return body;
         }
 
-        if (body instanceof byte[]) {
-            return body;
+        if (body instanceof ProblemDetail problemDetail) {
+            return ApiResponse.error(problemDetail);
         }
+
         return ApiResponse.success(body);
     }
 }

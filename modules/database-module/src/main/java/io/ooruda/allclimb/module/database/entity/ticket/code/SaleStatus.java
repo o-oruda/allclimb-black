@@ -15,10 +15,10 @@ import java.util.stream.Stream;
 @Getter
 public enum SaleStatus {
 
-    ON_SALE("01", "판매중"),
-    OFF_SALE("02", "판매중지"),
-    READY_SALE("03", "판매예정"),
-    DELETE("99", "삭제")
+    ON_SALE("OS", "판매중"),
+    OFF_SALE("FS", "판매중지"),
+    READY_SALE("RD", "판매예정"),
+    DELETE("DE", "삭제")
     ;
 
     @JsonValue
@@ -29,8 +29,8 @@ public enum SaleStatus {
             Collections.unmodifiableMap(Stream.of(values()).collect(Collectors.toMap(SaleStatus::getCode, Function.identity())));
 
     public static SaleStatus fromCode(String code) {
-        return Optional.ofNullable(code)
-                .map(saleStatusMap::get)
-                .orElse(OFF_SALE);
+        if (code == null) return null;
+        return Optional.ofNullable(saleStatusMap.get(code))
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown code '%s'", code)));
     }
 }

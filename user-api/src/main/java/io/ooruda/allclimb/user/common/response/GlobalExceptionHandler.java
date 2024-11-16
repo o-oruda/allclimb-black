@@ -14,10 +14,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     // 예외 발생 시 공통 에러 응답 반환
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({Exception.class, RuntimeException.class})
     public ResponseEntity<ApiResponse<Object>> handleException(Exception ex) {
 
-        log.error("{}", ex);
+        ex.printStackTrace();
         ApiResponse<Object> response = ApiResponse.error(CommonResponseCode.ERROR);
         return new ResponseEntity<>(response, CommonResponseCode.ERROR.getStatus());
     }
@@ -25,7 +25,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AllclimbException.class)
     public ResponseEntity<ApiResponse<Object>> allClimbException(AllclimbException ex) {
 
-        log.error("{}", ex);
+        ex.printStackTrace();
         ApiResponse<Object> response = ApiResponse.error(ex.getResponseCode());
         return new ResponseEntity<>(response, ex.getResponseCode().getStatus());
     }
