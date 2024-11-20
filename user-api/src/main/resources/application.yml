@@ -29,15 +29,6 @@ server:
   servlet:
     context-path: /api
 
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    operations-sorter: method
-    tags-sorter: alpha
-  default-produces-media-type: application/json
-  default-consumes-media-type: application/json
-
-
 management:
   server:
     port: 8090

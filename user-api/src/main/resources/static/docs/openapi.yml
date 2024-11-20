@@ -1,0 +1,499 @@
+openapi: 3.1.0
+info:
+  version: '1.0'
+  title: Admin-API
+  summary: '관리자용 API '
+  description: '관리자용 API 목록 '
+  termsOfService: ''
+  contact:
+    name: Admin
+    url: '-'
+    email: o.oruda.dev@gmail.com
+  license:
+    url: 'https://all-climb.com'
+    name: all-climb
+servers:
+  - url: 'http://localhost:8080/api/admin'
+    description: 'local '
+  - url: 'https://all-climb.com/api/admin'
+    description: dev
+paths:
+  /v1/tickets:
+    get:
+      tags:
+        - Tickets
+      summary: 이용권 목록 조회
+      description: '이용권 목록 조회 '
+      operationId: get-v1-tickets
+      parameters:
+        - name: ticketTypeCode
+          in: query
+          description: '티켓타입(PT : 기간권, CT : 횟수권)'
+          deprecated: false
+          schema:
+            type: string
+            enum:
+              - PT
+              - CT
+            examples:
+              - PT
+        - name: minPrice
+          in: query
+          description: 최소금액검색어
+          schema:
+            type: number
+        - name: maxPrice
+          in: query
+          description: 최대금액검색어
+          schema:
+            type: number
+        - name: name
+          in: query
+          description: 티켓이름
+          schema:
+            type: string
+        - name: useGrade
+          in: query
+          description: 이용가능등급
+          schema:
+            type: number
+        - name: saleStatusCode
+          in: query
+          description: '판매상태 (OS : 판매중, FS : 판매중지, RD : 판매예정)'
+          schema:
+            type: string
+            enum:
+              - OS
+              - FS
+              - RD
+              - DE
+            examples:
+              - OS
+        - name: adminId
+          in: query
+          description: 등록/수정 관리자ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Ticket'
+              examples:
+                Example 1:
+                  value:
+                    code: common.success.00001
+                    message: Success
+                    data:
+                      - id: 1
+                        ticketType: PT
+                        name: 1달 기간권
+                        price: 200000
+                        minUseGrade: 0
+                        maxUseGrade: 10
+                        ticketCount: -1
+                        validityDay: 30
+                        saleStatus: OS
+                        createAt: '2024-11-13 16:35:46'
+                        createdBy: admin
+                        updateAt: '2024-11-13 16:35:46'
+                        updatedBy: admin
+      servers:
+        - url: 'http://localhost:8080/api/admin'
+          description: 'local '
+        - url: 'https://all-climb.com/api/admin'
+          description: dev
+    post:
+      tags:
+        - Tickets
+      summary: 이용권 생성
+      description: 이용권 생성
+      operationId: post-v1-tickets
+      requestBody:
+        $ref: '#/components/requestBodies/TicketCreateBody'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Ticket'
+              examples:
+                Example 1:
+                  value:
+                    code: common.success.00001
+                    message: Success
+                    data:
+                      id: 6
+                      ticketType: CT
+                      name: 일일입장권
+                      price: 22000
+                      minUseGrade: 1
+                      maxUseGrade: 11
+                      ticketCount: 1
+                      validityDay: 1
+                      saleStatus: OS
+                      createAt: '2024-11-20 01:20:16'
+                      createdBy: admin
+                      updateAt: '2024-11-20 01:20:16'
+                      updatedBy: admin
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: 'null'
+              examples:
+                Example 1:
+                  value:
+                    code: ticket.error.00002
+                    message: ticket create error
+                    data: null
+      servers:
+        - url: 'http://localhost:8080/api/admin'
+          description: 'local '
+        - url: 'https://all-climb.com/api/admin'
+          description: dev
+    patch:
+      tags:
+        - Tickets
+      summary: 이용권 수정
+      description: 입력한 값만 수정됨
+      operationId: patch-v1-tickets
+      requestBody:
+        $ref: '#/components/requestBodies/TicketUpdateBody'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Ticket'
+              examples:
+                Example 1:
+                  value:
+                    code: common.success.00001
+                    message: Success
+                    data:
+                      id: 5
+                      ticketType: CT
+                      name: 일일입장권
+                      price: 25000
+                      minUseGrade: 3
+                      maxUseGrade: 15
+                      ticketCount: 1
+                      validityDay: 1
+                      saleStatus: OS
+                      createAt: '2024-11-17 01:39:13'
+                      createdBy: admin
+                      updateAt: '2024-11-16 16:41:02'
+                      updatedBy: admin
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: 'null'
+              examples:
+                Example 1:
+                  value:
+                    code: ticket.error.00003
+                    message: ticket update error
+                    data: null
+      servers:
+        - url: 'http://localhost:8080/api/admin'
+          description: 'local '
+        - url: 'https://all-climb.com/api/admin'
+          description: dev
+  '/v1/tickets/{ticketId}':
+    get:
+      tags:
+        - Tickets
+      summary: 이용권 상세 조회
+      description: 이용권 상세 조회
+      operationId: get-v1-tickets-ticketId
+      parameters:
+        - name: ticketId
+          in: path
+          description: 이용권ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Ticket'
+              examples:
+                Example 1:
+                  value:
+                    code: common.success.00001
+                    message: Success
+                    data:
+                      id: 1
+                      ticketType: PT
+                      name: 1달 기간권
+                      price: 200000
+                      minUseGrade: 0
+                      maxUseGrade: 10
+                      ticketCount: -1
+                      validityDay: 30
+                      saleStatus: OS
+                      createAt: '2024-11-13 16:35:46'
+                      createdBy: admin
+                      updateAt: '2024-11-13 16:35:46'
+                      updatedBy: admin
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: 'null'
+                x-examples:
+                  Example 1:
+                    code: ticket.error.00001
+                    message: 존재하지 않는 티켓입니다
+                    data: null
+              examples:
+                Example 1:
+                  value:
+                    code: ticket.error.00001
+                    message: 존재하지 않는 티켓입니다
+                    data: null
+      servers:
+        - url: 'http://localhost:8080/api/admin'
+          description: 'local '
+        - url: 'https://all-climb.com/api/admin'
+          description: dev
+tags:
+  - name: Tickets
+    description: tickets
+components:
+  requestBodies:
+    TicketCreateBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              ticketType:
+                type: string
+                enum:
+                  - PT
+                  - CT
+                description: |-
+                  이용권 타입 
+                  - PT : 기간권
+                  - CT : 횟수권
+              price:
+                type: number
+                description: 이용권 가격
+              name:
+                type: string
+                description: '이용권 이름 '
+              minUseGrade:
+                type: integer
+                description: 최소사용 암장등급
+              maxUseGrade:
+                type: integer
+                description: 최대사용 암장등급
+              ticketCount:
+                type: integer
+                description: '이용횟수 (기간권: -1)'
+              validityDay:
+                type: integer
+                description: 이용가능일수
+              saleStatus:
+                type: string
+                enum:
+                  - OS
+                  - FS
+                  - RD
+                description: |-
+                  판매상태 
+                  - OS : 판매중
+                  - FS : 판매중지
+                  - RD : 판매준비중
+            required:
+              - ticketType
+              - price
+              - name
+              - minUseGrade
+              - maxUseGrade
+              - ticketCount
+              - validityDay
+              - saleStatus
+            x-examples:
+              Example 1:
+                ticketType: CT
+                price: 22000
+                name: 일일입장권
+                minUseGrade: null
+                maxUseGrade: null
+                ticketCount: 1
+                validityDay: 1
+                saleStatus: OS
+    TicketUpdateBody:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              price:
+                type: integer
+                description: 이용권 가격
+              name:
+                type:
+                  - string
+                  - 'null'
+                description: 이용권 이름
+              minUseGrade:
+                type: integer
+                description: 최소이용암장등급
+              maxUseGrade:
+                type: integer
+                description: 최대이용암장등급
+            x-examples:
+              Example 1:
+                price: 25000
+                name: null
+                minUseGrade: 3
+                maxUseGrade: 15
+  schemas:
+    Ticket:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 이용권ID
+        ticketType:
+          type: string
+          enum:
+            - PT
+            - CT
+          description: |-
+            이용권 타입 
+            - PT : 기간권
+            - CT : 횟수권
+        name:
+          type: string
+          description: '이용권 이름 '
+        price:
+          type: number
+          description: 이용권 가격
+        minUseGrade:
+          type: integer
+          description: 최소사용 암장등급
+        maxUseGrade:
+          type: integer
+          description: 최대사용 암장등급
+        ticketCount:
+          type: integer
+          description: '이용횟수 (기간권: -1)'
+        validityDay:
+          type: integer
+          description: 이용가능일수
+        saleStatus:
+          type: string
+          enum:
+            - OS
+            - FS
+            - RD
+          description: |-
+            판매상태 
+            - OS : 판매중
+            - FS : 판매중지
+            - RD : 판매준비중
+        createAt:
+          type: string
+          description: 생성일시
+        createdBy:
+          type: string
+          description: 생성자ID
+        updateAt:
+          type: string
+          description: 수정일시
+        updatedBy:
+          type: string
+          description: 수정자ID
+      required:
+        - id
+        - ticketType
+        - name
+        - price
+        - saleStatus
+        - createAt
+        - createdBy
+        - updateAt
+        - updatedBy
+      x-examples:
+        Example 1:
+          id: 1
+          ticketType: PT
+          name: 1달 기간권
+          price: 200000
+          minUseGrade: 0
+          maxUseGrade: 10
+          ticketCount: -1
+          validityDay: 30
+          saleStatus: OS
+          createAt: '2024-11-13 16:35:46'
+          createdBy: admin
+          updateAt: '2024-11-13 16:35:46'
+          updatedBy: admin

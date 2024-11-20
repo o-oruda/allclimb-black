@@ -12,7 +12,6 @@ dependencies {
 
     // module import
     api project(':modules:database-module')
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
 
     // OAuth 2.0
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
