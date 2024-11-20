@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 @Getter
 @AllArgsConstructor
 public enum TicketType {
-
     PERIOD("PT", "기간권"),
     COUNT("CT", "횟수권")
     ;
