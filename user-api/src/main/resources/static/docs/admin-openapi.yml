@@ -7,8 +7,8 @@ info:
   termsOfService: ''
   contact:
     name: Admin
-    url: '-'
-    email: o.oruda.dev@gmail.com
+    url: 'http://localhost:8080'
+    email: all-climb@gmail.com
   license:
     url: 'https://all-climb.com'
     name: all-climb
@@ -136,6 +136,24 @@ paths:
                     type: string
                   data:
                     $ref: '#/components/schemas/Ticket'
+                x-examples:
+                  Example 1:
+                    code: common.success.00001
+                    message: Success
+                    data:
+                      id: 6
+                      ticketType: CT
+                      name: 일일입장권
+                      price: 22000
+                      minUseGrade: 1
+                      maxUseGrade: 11
+                      ticketCount: 1
+                      validityDay: 1
+                      saleStatus: OS
+                      createAt: '2024-11-20 01:20:16'
+                      createdBy: null
+                      updateAt: '2024-11-20 01:20:16'
+                      updatedBy: null
               examples:
                 Example 1:
                   value:
@@ -152,9 +170,9 @@ paths:
                       validityDay: 1
                       saleStatus: OS
                       createAt: '2024-11-20 01:20:16'
-                      createdBy: admin
+                      createdBy: Admin
                       updateAt: '2024-11-20 01:20:16'
-                      updatedBy: admin
+                      updatedBy: Admin
         '400':
           description: Bad Request
           content:
@@ -167,7 +185,9 @@ paths:
                   message:
                     type: string
                   data:
-                    type: 'null'
+                    type:
+                      - object
+                      - 'null'
               examples:
                 Example 1:
                   value:
@@ -207,19 +227,19 @@ paths:
                     code: common.success.00001
                     message: Success
                     data:
-                      id: 5
+                      id: 6
                       ticketType: CT
                       name: 일일입장권
-                      price: 25000
-                      minUseGrade: 3
-                      maxUseGrade: 15
+                      price: 22000
+                      minUseGrade: 1
+                      maxUseGrade: 11
                       ticketCount: 1
                       validityDay: 1
                       saleStatus: OS
-                      createAt: '2024-11-17 01:39:13'
-                      createdBy: admin
-                      updateAt: '2024-11-16 16:41:02'
-                      updatedBy: admin
+                      createAt: '2024-11-20 01:20:16'
+                      createdBy: Admin
+                      updateAt: '2024-11-20 01:20:16'
+                      updatedBy: Admin
         '400':
           description: Bad Request
           content:
@@ -232,7 +252,9 @@ paths:
                   message:
                     type: string
                   data:
-                    type: 'null'
+                    type:
+                      - object
+                      - 'null'
               examples:
                 Example 1:
                   value:
@@ -303,12 +325,9 @@ paths:
                   message:
                     type: string
                   data:
-                    type: 'null'
-                x-examples:
-                  Example 1:
-                    code: ticket.error.00001
-                    message: 존재하지 않는 티켓입니다
-                    data: null
+                    type:
+                      - object
+                      - 'null'
               examples:
                 Example 1:
                   value:
