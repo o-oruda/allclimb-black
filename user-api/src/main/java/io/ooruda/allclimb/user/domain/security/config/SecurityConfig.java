@@ -28,7 +28,7 @@ public class SecurityConfig {
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOrigins(Collections.singletonList("https://all-climb.com/"));
+            config.setAllowedOrigins(Collections.singletonList("*"));
             config.setAllowCredentials(true);
             return config;
         };
