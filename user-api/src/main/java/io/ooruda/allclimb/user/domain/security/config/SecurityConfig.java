@@ -30,7 +30,7 @@ public class SecurityConfig {
         config.setAllowedHeaders(Collections.singletonList("*"));
         config.setAllowedMethods(Collections.singletonList("*"));
         config.setAllowedOrigins(Collections.singletonList("*"));
-        config.setAllowCredentials(true);
+        config.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
@@ -54,19 +54,5 @@ public class SecurityConfig {
                 );
 
         return httpSecurity.build();
-    }
-
-    @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("*");
-        config.addAllowedMethod("*");
-        config.addAllowedHeader("*");
-        config.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-
-        return new CorsFilter(source);
     }
 }
