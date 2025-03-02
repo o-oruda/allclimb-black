@@ -15,10 +15,10 @@ import java.util.stream.Stream;
 @Getter
 public enum SaleStatus {
 
-    ON_SALE("OS", "판매중"),
-    OFF_SALE("FS", "판매중지"),
-    READY_SALE("RD", "판매예정"),
-    DELETE("DE", "삭제")
+    ON_SALE("ON_SALE", "판매중"),
+    OFF_SALE("OFF_SALE", "판매중지"),
+    READY_SALE("READY", "판매예정"),
+    DELETE("DELETE", "삭제")
     ;
 
     @JsonValue

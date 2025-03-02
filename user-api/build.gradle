@@ -13,6 +13,8 @@ dependencies {
     // module import
     api project(':modules:database-module')
 
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+
     // OAuth 2.0
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     // Jwt

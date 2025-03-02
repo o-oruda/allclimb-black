@@ -14,10 +14,10 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 @Getter
 public enum MyTicketStatus {
-    READY("RD", "사용대기"),
-    IN_USE("DO", "사용중"),
-    EXPIRE("EX", "만기"),
-    CANCEL("CN", "취소")
+    READY("READY", "사용대기"),
+    IN_USE("IN_USE", "사용중"),
+    EXPIRE("EXPIRE", "만기"),
+    CANCEL("CANCEL", "취소")
     ;
 
     @JsonValue

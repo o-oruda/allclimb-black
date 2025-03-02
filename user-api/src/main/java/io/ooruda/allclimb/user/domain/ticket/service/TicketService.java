@@ -1,8 +1,8 @@
 package io.ooruda.allclimb.user.domain.ticket.service;
 
 import io.ooruda.allclimb.user.common.response.error.AllclimbException;
-import io.ooruda.allclimb.user.domain.ticket.api.request.TicketSearchDto;
-import io.ooruda.allclimb.user.domain.ticket.api.response.Ticket;
+import io.ooruda.allclimb.user.domain.ticket.dto.TicketSearchDto;
+import io.ooruda.allclimb.user.domain.ticket.dto.Ticket;
 import io.ooruda.allclimb.user.domain.ticket.error.TicketError;
 import io.ooruda.allclimb.user.domain.ticket.repository.TicketInfoRepository;
 import io.ooruda.allclimb.user.domain.ticket.repository.dto.TicketInfoWhereDto;

@@ -6,9 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
 import lombok.Getter;
-
-import java.time.Instant;
 
 @Getter
 @Entity
@@ -25,7 +24,7 @@ public class TicketUsageHistory extends BaseEntity {
 
     @NotNull
     @Column(name = "use_dtm", nullable = false)
-    private Instant useDtm;
+    private LocalDateTime useDtm;
 
     @Size(max = 100)
     @Column(name = "gym_name", length = 100)

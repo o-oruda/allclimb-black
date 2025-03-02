@@ -1,4 +1,4 @@
-package io.ooruda.allclimb.user.domain.ticket.api.response;
+package io.ooruda.allclimb.user.domain.ticket.dto;
 
 import io.ooruda.allclimb.module.database.entity.ticket.TicketInfo;
 import io.ooruda.allclimb.module.database.entity.ticket.code.TicketType;

@@ -3,7 +3,7 @@ package io.ooruda.allclimb.user.domain.ticket.repository.dto;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import io.ooruda.allclimb.module.database.entity.ticket.code.SaleStatus;
 import io.ooruda.allclimb.module.database.repository.ticket.dto.TicketInfoDefaultWhereParam;
-import io.ooruda.allclimb.user.domain.ticket.api.request.TicketSearchDto;
+import io.ooruda.allclimb.user.domain.ticket.dto.TicketSearchDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

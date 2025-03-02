@@ -1,3 +1,11 @@
 logging:
   level:
     root: INFO
+
+
+payment:
+  kakao:
+    secretKey: DEV2BD8B23EEB58D95B1CCF562900A5B86CEE958
+    cid: TC0ONETIME
+    cidSecret: Secret key(dev)
+    partnerUserId: allclimb-dev

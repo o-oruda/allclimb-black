@@ -22,14 +22,14 @@ public class MyTicket extends BaseEntity {
      */
     @NotNull
     @Column(name = "ticket_id", nullable = false)
-    private Integer ticketId;
+    private Long ticketId;
 
     /**
      * 회원 ID
      */
     @NotNull
     @Column(name = "member_id", nullable = false)
-    private Integer memberId;
+    private Long memberId;
 
     /**
      * 내 이용권 상태

@@ -1,8 +1,8 @@
 package io.ooruda.allclimb.user.domain.ticket.api;
 
 import io.ooruda.allclimb.module.database.entity.ticket.code.TicketType;
-import io.ooruda.allclimb.user.domain.ticket.api.request.TicketSearchDto;
-import io.ooruda.allclimb.user.domain.ticket.api.response.Ticket;
+import io.ooruda.allclimb.user.domain.ticket.dto.TicketSearchDto;
+import io.ooruda.allclimb.user.domain.ticket.dto.Ticket;
 import io.ooruda.allclimb.user.domain.ticket.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

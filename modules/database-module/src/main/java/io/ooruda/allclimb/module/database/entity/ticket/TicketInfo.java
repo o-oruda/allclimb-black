@@ -26,7 +26,7 @@ public class TicketInfo extends BaseEntity {
      * 이용권타입
      */
     @NotNull
-    @Column(name = "ticket_type", nullable = false, length = 2)
+    @Column(name = "ticket_type", nullable = false, length = 10)
     private TicketType ticketType;
 
     /**

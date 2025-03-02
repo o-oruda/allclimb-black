@@ -1,9 +1,8 @@
-package io.ooruda.allclimb.module.database.entity.ticket.code;
+package io.ooruda.allclimb.module.database.entity.payment.code;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
 import java.util.Map;
@@ -12,24 +11,24 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Getter
 @AllArgsConstructor
-public enum TicketType {
-    PERIOD("PERIOD", "기간권"),
-    COUNT("COUNTS", "횟수권")
+@Getter
+public enum PaymentType {
+    PAYMENT("PAYMENT", "결제"),
+    CANCEL("CANCEL", "취소"),
+    RETURN("RETURN", "환불요청");
     ;
 
     @JsonValue
     private final String code;
     private final String desc;
 
-    private static final Map<String, TicketType> ticketTypeMap = Collections.unmodifiableMap(Stream.of(values())
-            .collect(Collectors.toMap(TicketType::getCode, Function.identity())));
+    private static final Map<String, PaymentType> orderTypeMap =
+            Collections.unmodifiableMap(Stream.of(values()).collect(Collectors.toMap(PaymentType::getCode, Function.identity())));
 
-    public static TicketType fromCode(String code) {
+    public static PaymentType fromCode(final String code) {
         if (code == null) return null;
-        return Optional.of(ticketTypeMap.get(code))
+        return Optional.ofNullable(orderTypeMap.get(code))
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown code '%s'", code)));
     }
-
 }

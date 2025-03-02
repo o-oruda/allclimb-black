@@ -1,9 +1,19 @@
-package io.ooruda.allclimb.user.domain.purchase.payment.kakao.dto;
+package io.ooruda.allclimb.user.domain.payment.kakao.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
 
-public class PaymentReadyRequest {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class KakaoPaymentReadyRequest {
 
     /**
      * (required)
